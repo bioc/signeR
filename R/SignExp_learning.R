@@ -385,6 +385,21 @@ setMethod("ExposureClassifyCV",signature(signexp_obj="ANY",labels="character",
           }
 )
 
+cox_as_data_frame2 <- function(m) {
+    tidy(m, exp=TRUE, conf.int=TRUE) |>
+    dplyr::transmute(
+        term,
+        HR=estimate,
+        Lower_CI=conf.low,
+        Upper_CI=conf.high,
+        Inv_HR=1/estimate,
+        Inv_Lower_CI=1/conf.high,
+        Inv_Upper_CI=1/conf.low,
+        p=p.value
+    ) |>
+    as.data.frame()
+}
+
 Mymelt<-function(M){
     D<-data.frame(M)
     Di<-NROW(D)
@@ -665,7 +680,7 @@ setMethod("ExposureSurvModel",signature(Exposures="matrix",surv="ANY",
               thisTable<-summary(cph)
               Pvalues<-round(thisTable$coefficients[,5],5)
               HR<-round(thisTable$coefficients[,2],5)
-              multiv.tests<-cox_as_data_frame(thisTable)[,4:10]
+              multiv.tests<-cox_as_data_frame2(cph)[,2:8]
               colnames(multiv.tests)[7]<-"P.value"
               if(model0){
                   thisAnova<-anova(cph0,cph)
@@ -730,7 +745,7 @@ setMethod("ExposureSurvModel",signature(Exposures="matrix",surv="ANY",
                 labs(x="",y="-log(pvalue)")
               
               fp <- ggplot(multiv.tests, aes(x = HR, y = labels, xmin = Lower_CI, xmax = Upper_CI)) +
-                geom_hline(aes(yintercept = labels, colour = colour), size = 7) + 
+                geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) + 
                 geom_pointrange(shape = 22, fill = "black") +
                 geom_vline(xintercept = 1, linetype = 3) +
                 ylab("") +
@@ -751,12 +766,12 @@ setMethod("ExposureSurvModel",signature(Exposures="matrix",surv="ANY",
                                        colour=multiv.tests$colour)
               
               ggtable <- ggplot(data = multiv.table, aes(y = labels)) +
-                geom_hline(aes(yintercept = labels, colour = colour), size = 7) +
+                geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) +
                 geom_text(aes(x = 0, label = labels), hjust = 0) +
                 geom_text(aes(x = 3, label = HR_CI)) +
-                geom_text(aes(x = 3, y=n+0.5, label = "HR(CI)")) +
+                annotate(geom='text', x = 3, y=n+0.5, label = "HR(CI)") +
                 geom_text(aes(x = 7, label = P.value), hjust = 1) +
-                geom_text(aes(x = 7, y=n+0.5, label = "P.value"), hjust = 1) +
+                annotate(geom='text', x = 7, y=n+0.5, label = "P.value", hjust = 1) +
                 scale_colour_identity() +
                 scale_y_discrete(limits = rev(multiv.tests$labels)) +
                 theme_void() + 
@@ -847,13 +862,15 @@ setMethod("ExposureSurvModel",signature(Exposures="SignExp",surv="ANY",
                   E<-t(D)
                   const<-min(E[E>0])*1e-3
                   thisdata<-data.frame(dtime,os,log2(E+const),addata)
-                  cph<-coxph(Surv(dtime,os)~., data=thisdata)
+                  suppressWarnings({
+                    cph<-coxph(Surv(dtime,os)~., data=thisdata)
+                  })
                   coxz<-cox.zph(cph)
                   pval_prop.df<-round(coxz$table[,3],5)[1:(n+1)] #<-output n+1 real
                   thisTable<-summary(cph)
                   pval.df<-round(thisTable$coefficients[,5],5)[1:n] #<-output n real
                   hr.df<-round(thisTable$coefficients[,2],5)[1:n] #<-output n real
-                  mult.tests.ar<-as.vector(as.matrix(cox_as_data_frame(thisTable)[1:n,4:10])) #<-output nx7 real
+                  mult.tests.ar<-as.vector(as.matrix(cox_as_data_frame2(cph)[1:n,2:8])) #<-output nx7 real
                   if(model0){
                       thisAnova<-anova(cph0,cph)
                       pval.anova<-thisAnova[[4]][2] #<-output 1 real
@@ -959,7 +976,7 @@ setMethod("ExposureSurvModel",signature(Exposures="SignExp",surv="ANY",
                 labs(x="",y="-log(pvalue)")
               
               fp <- ggplot(multiv.tests, aes(x = HR, y = labels, xmin = Lower_CI, xmax = Upper_CI)) +
-                geom_hline(aes(yintercept = labels, colour = colour), size = 7) + 
+                geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) + 
                 geom_pointrange(shape = 22, fill = "black") +
                 geom_vline(xintercept = 1, linetype = 3) +
                 ylab("") +
@@ -980,12 +997,12 @@ setMethod("ExposureSurvModel",signature(Exposures="SignExp",surv="ANY",
                                        colour=multiv.tests$colour)
               
               ggtable <- ggplot(data = multiv.table, aes(y = labels)) +
-                geom_hline(aes(yintercept = labels, colour = colour), size = 7) +
+                geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) +
                 geom_text(aes(x = 0, label = labels), hjust = 0) +
                 geom_text(aes(x = 3, label = HR_CI)) +
-                geom_text(aes(x = 3, y=n+0.5, label = "HR(CI)")) +
+                annotate(geom='text', x = 3, y=n+0.5, label = "HR(CI)") +
                 geom_text(aes(x = 7, label = P.value), hjust = 1) +
-                geom_text(aes(x = 7, y=n+0.5, label = "P.value"), hjust = 1) +
+                annotate(geom='text', x = 7, y=n+0.5, label = "P.value", hjust = 1) +
                 scale_colour_identity() +
                 theme_void() + 
                 theme(plot.margin = margin(5, 0, 35, 0))

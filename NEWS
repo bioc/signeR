@@ -1,5 +1,12 @@
 
+Changes in signeR 2.11.1:
+
+   * Remove survivalAnalysis dependency
+   * Fixes for some ggplot2 warnings
+   * Update C++ req to C++14
+
 Changes in signeR 2.5.1:
+
     * Preserve dimnames from the given input matrices
 
 Changes in signeR 2.3.3:

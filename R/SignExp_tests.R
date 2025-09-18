@@ -677,7 +677,7 @@ setMethod("ExposureSurvival",signature(Exposures="matrix",surv="ANY",
                   Pvalues_cox[m]<-round(summary(cph)$coefficients[5],5)
                   thisTable<-summary(cph)
                   HR_cox[m]<-round(thisTable$coefficients[2],5)
-                  univ.tests[m,]<-as.vector(cox_as_data_frame(thisTable)[1,4:10])
+                  univ.tests[m,]<-as.vector(cox_as_data_frame2(cph)[1,2:8])
                   univ.list<-c(univ.list,list(cph))
               } # end each signature
               if(method=="logrank") {
@@ -805,7 +805,7 @@ setMethod("ExposureSurvival",signature(Exposures="matrix",surv="ANY",
                   univ.tests$labels<-signature_names
                   univ.tests$colour <- rep(c("white", "gray95"), ceiling(nrow(univ.tests)/2))[1:nrow(univ.tests)]
                   fp <- ggplot(univ.tests, aes(x = HR, y = labels, xmin = Lower_CI, xmax = Upper_CI)) +
-                      geom_hline(aes(yintercept = labels, colour = colour), size = 7) + 
+                      geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) + 
                       geom_pointrange(shape = 22, fill = "black") +
                       geom_vline(xintercept = 1, linetype = 3) +
                       ylab("") +
@@ -825,12 +825,12 @@ setMethod("ExposureSurvival",signature(Exposures="matrix",surv="ANY",
                                          P.value=signif(univ.tests$P.value,3),
                                          colour=univ.tests$colour)
                   ggtable <- ggplot(data = univ.table, aes(y = labels)) +
-                      geom_hline(aes(yintercept = labels, colour = colour), size = 7) +
+                      geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) +
                       geom_text(aes(x = 0, label = labels), hjust = 0) +
                       geom_text(aes(x = 3, label = HR_CI)) +
-                      geom_text(aes(x = 3, y=n+0.5, label = "HR(CI)")) +
+                      annotate(geom='text', x = 3, y=n+0.5, label = "HR(CI)") +
                       geom_text(aes(x = 7, label = P.value), hjust = 1) +
-                      geom_text(aes(x = 7, y=n+0.5, label = "P.value"), hjust = 1) +
+                      annotate(geom='text', x = 7, y=n+0.5, label = "P.value", hjust = 1) +
                       scale_colour_identity() +
                       theme_void() + 
                       theme(plot.margin = margin(5, 0, 35, 0))
@@ -942,8 +942,8 @@ setMethod("ExposureSurvival",signature(Exposures="SignExp",surv="ANY",
                           thisdata$lexp<-log2(exposure+const)
                           cph<-coxph(surv~lexp, data=thisdata) #Cx
                           thisTable<-summary(cph) #Cx
-                          coxdf<-cox_as_data_frame(thisTable) #Cx
-                          return(as.vector(as.matrix(coxdf[1,4:10])))
+                          coxdf<-cox_as_data_frame2(cph) #Cx
+                          return(as.vector(as.matrix(coxdf[1,2:8])))
                           #HR,Lower_CI,Upper_CI,Inv_HR,Inv_Lower_CI,Inv_Upper_CI,p
                   })
                   univ.tests.ar<-Res.univ[1:7,, ]#[(j+4):(j+10),,]
@@ -1108,7 +1108,7 @@ setMethod("ExposureSurvival",signature(Exposures="SignExp",surv="ANY",
                   univ.tests$labels<-signature_names
                   univ.tests$colour <- rep(c("white", "gray95"), ceiling(nrow(univ.tests)/2))[1:nrow(univ.tests)]
                   fp <- ggplot(univ.tests, aes(x = HR, y = labels, xmin = Lower_CI, xmax = Upper_CI)) +
-                      geom_hline(aes(yintercept = labels, colour = colour), size = 7) + 
+                      geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) + 
                       geom_pointrange(shape = 22, fill = "black") +
                       geom_vline(xintercept = 1, linetype = 3) +
                       ylab("") +
@@ -1129,12 +1129,12 @@ setMethod("ExposureSurvival",signature(Exposures="SignExp",surv="ANY",
                                          colour=univ.tests$colour)
                   
                   ggtable <- ggplot(data = univ.table, aes(y = labels)) +
-                      geom_hline(aes(yintercept = labels, colour = colour), size = 7) +
+                      geom_hline(aes(yintercept = labels, colour = colour), linewidth = 7) +
                       geom_text(aes(x = 0, label = labels), hjust = 0) +
                       geom_text(aes(x = 3, label = HR_CI)) +
-                      geom_text(aes(x = 3, y=n+0.5, label = "HR(CI)")) +
+                      annotate(geom='text', x = 3, y=n+0.5, label = "HR(CI)") +
                       geom_text(aes(x = 7, label = P.value), hjust = 1) +
-                      geom_text(aes(x = 7, y=n+0.5, label = "P.value"), hjust = 1) +
+                      annotate(geom='text', x = 7, y=n+0.5, label = "P.value", hjust = 1) +
                       scale_colour_identity() +
                       theme_void() + 
                       theme(plot.margin = margin(5, 0, 35, 0))

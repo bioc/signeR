@@ -15,7 +15,7 @@ export(genOpportunityFromGenome, genCountMatrixFromVcf, genCountMatrixFromMAF, s
 export(signeRFlow)
 
 import(utils, methods, future, future.apply,
-    class, VGAM, glmnet, e1071, ada,
+    class, VGAM, glmnet, ada,
     kknn, ggplot2, scales, reshape2, 
     RColorBrewer, dplyr)
 
@@ -66,7 +66,6 @@ importFrom("VariantAnnotation", "readVcf", "isSNV", "alt", "ref", "geno")
 importFrom("PMCMRplus","kwAllPairsConoverTest")
 importFrom("GenomeInfoDb", "seqinfo", "renameSeqlevels", "mapSeqlevels", "seqlevels")
 importFrom("survival", "Surv","is.Surv","survdiff", "survfit", "coxph", "cox.zph")
-importFrom("survivalAnalysis", "cox_as_data_frame")
 importFrom("survminer", "ggsurvplot", "ggforest")
 importFrom("maxstat", "maxstat.test")
 importFrom("pvclust", "msfit")
@@ -76,3 +75,5 @@ importFrom("ggpubr","ggarrange")
 importFrom("rtracklayer", "import")
 importFrom("BSgenome", "installed.genomes", "getBSgenome")
 importFrom("kknn", "kknn")
+importFrom("broom", "tidy")
+importFrom("e1071", "svm", "naiveBayes")

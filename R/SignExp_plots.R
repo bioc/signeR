@@ -175,7 +175,7 @@ setMethod("SignPlot",signature(signexp_obj="SignExp",plot_to_file="ANY",
           labs(x="SNV type",y="") +
           theme(legend.position="none") +
           coord_cartesian(expand=0) +
-          geom_segment( y = Inf, yend = Inf, aes(color = muts), x = -Inf, xend = Inf, size = 4) +
+          geom_segment( y = Inf, yend = Inf, aes(color = muts), x = -Inf, xend = Inf, linewidth = 4) +
           scale_color_manual(values=xcolores) +
           geom_errorbar(aes(ymin=q25, ymax=q75), width=.2, position=position_dodge(.9))+
           theme(strip.background.x=element_blank()) +
