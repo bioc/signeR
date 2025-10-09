@@ -1,4 +1,8 @@
 
+Changes in signeR 2.11.2:
+
+   * Move VariantAnnotation from Depends to Imports
+
 Changes in signeR 2.11.1:
 
    * Remove survivalAnalysis dependency
