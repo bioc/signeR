@@ -1,4 +1,8 @@
 
+Changes in signeR 2.15.1:
+
+   * Add seqlength to example vcf to avoid error
+
 Changes in signeR 2.11.2:
 
    * Move VariantAnnotation from Depends to Imports
