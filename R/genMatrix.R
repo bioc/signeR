@@ -106,7 +106,7 @@ genCountMatrixFromVcf <- function(bsgenome, vcfobj) {
     # but not if the chrom is circular
     si = BiocGenerics::as.data.frame(seqinfo(bsgenome))
     si = si[(is.na(si$isCircular) | si$isCircular==FALSE),]
-    si = GRanges(seqinfo(bsgenome)[rownames(si)])
+    si = GRanges(seqinfo(bsgenome)[si$seqnames])
     if(length(subsetByOverlaps(vcfobj, si, type='start')) > 0 ||
         length(subsetByOverlaps(vcfobj, si, type='end')) > 0) {
         warning("Mutations on the edge of chromosomes will be ignored.")

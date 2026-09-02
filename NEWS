@@ -1,7 +1,8 @@
 
-Changes in signeR 2.15.1:
+Changes in signeR 2.15.2:
 
-   * Add seqlength to example vcf to avoid error
+   * fix seqinfo subset error
+   * Add seqlength to example vcf to avoid seqinfo errors
 
 Changes in signeR 2.11.2:
 
